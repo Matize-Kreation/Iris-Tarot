@@ -1,0 +1,403 @@
+<header class="hero">
+    <style>
+        :root {
+            --bg-main: #1e1613;
+            --gold: #c2a05a;
+            --border-gold: rgba(194, 160, 90, .5);
+            --radius-lg: 1.25rem;
+            --font-head: "Playfair Display", Georgia, serif;
+
+            /* === Rundum-Naht (dezent & hochwertig) === */
+            --stitch-band: 16px;
+            /* Bandbreite Desktop (schmal)   */
+            --stitch-band-m: 12px;
+            /* Bandbreite Mobile              */
+            --stitch-leather1: #352219;
+            /* Leder-Grundton                 */
+            --stitch-leather2: #221711;
+            /* Leder-Schatten                 */
+            --stitch-edge-dark: #0b0908;
+            /* harte Kante innen              */
+            --stitch-edge-light: rgba(255, 255, 255, .08);
+            /* feine Lichtkante     */
+            --stitch-thread: #e9c46a;
+            /* Faden (Gold warm)              */
+            --stitch-thread-hi: #fff2ba;
+            /* winzige Highlights             */
+            --stitch-shadow: rgba(0, 0, 0, .45);
+            /* Tiefenschatten             */
+        }
+
+        html,
+        body {
+            background: var(--bg-main);
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden
+        }
+
+        .hero {
+            position: relative;
+            width: 100%;
+            min-height: 100vh;
+            padding: 6vh 0;
+            background: var(--bg-main);
+            margin: 0 0 2rem 0;
+            border-bottom: 1px solid var(--border-gold);
+            overflow: hidden;
+        }
+
+        .hero-bg {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .hero-img {
+            width: 100%;
+            height: auto;
+            max-height: 88vh;
+            object-fit: contain;
+            object-position: center;
+            opacity: 0;
+            transform: scale(1.005);
+            animation: heroFade 1s ease-out forwards;
+            display: block;
+        }
+
+        @keyframes heroFade {
+            to {
+                opacity: 1;
+                transform: scale(1)
+            }
+        }
+
+        /* ===============================
+       Rundum-Ledernaht (schmal, edel)
+       =============================== */
+        .stitch-frame {
+            position: absolute;
+            inset: 0;
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        /* Bänder oben/unten */
+        .stitch-band-x {
+            position: absolute;
+            left: 0;
+            right: 0;
+            height: var(--stitch-band);
+            background:
+                repeating-linear-gradient(90deg, rgba(255, 255, 255, .02) 0 3px, transparent 3px 9px),
+                linear-gradient(180deg, var(--stitch-leather1), var(--stitch-leather2));
+            box-shadow:
+                inset 0 1px 0 var(--stitch-edge-light),
+                inset 0 -1px 0 var(--stitch-edge-dark),
+                0 6px 18px var(--stitch-shadow);
+            border-top: 1px solid rgba(255, 255, 255, .05);
+            border-bottom: 1px solid rgba(0, 0, 0, .55);
+        }
+
+        .stitch-top {
+            top: 0
+        }
+
+        .stitch-bottom {
+            bottom: 0
+        }
+
+        /* Bänder links/rechts */
+        .stitch-band-y {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: var(--stitch-band);
+            background:
+                repeating-linear-gradient(0deg, rgba(255, 255, 255, .02) 0 3px, transparent 3px 9px),
+                linear-gradient(90deg, var(--stitch-leather1), var(--stitch-leather2));
+            box-shadow:
+                inset 1px 0 0 var(--stitch-edge-light),
+                inset -1px 0 0 var(--stitch-edge-dark),
+                6px 0 18px var(--stitch-shadow);
+            border-left: 1px solid rgba(255, 255, 255, .05);
+            border-right: 1px solid rgba(0, 0, 0, .55);
+        }
+
+        .stitch-left {
+            left: 0
+        }
+
+        .stitch-right {
+            right: 0
+        }
+
+        /* Faden-Stiche (dezent) – zwei Reihen pro Band */
+        .stitch-band-x::before,
+        .stitch-band-x::after {
+            content: "";
+            position: absolute;
+            left: 0;
+            right: 0;
+            height: 0;
+            border-top: 2px dashed var(--stitch-thread);
+            opacity: .9;
+            filter: drop-shadow(0 1px 0 rgba(0, 0, 0, .55));
+        }
+
+        .stitch-band-x::before {
+            top: 4px
+        }
+
+        .stitch-band-x::after {
+            bottom: 4px
+        }
+
+        .stitch-band-y::before,
+        .stitch-band-y::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 0;
+            border-left: 2px dashed var(--stitch-thread);
+            opacity: .9;
+            filter: drop-shadow(1px 0 0 rgba(0, 0, 0, .55));
+        }
+
+        .stitch-band-y::before {
+            left: 4px
+        }
+
+        .stitch-band-y::after {
+            right: 4px
+        }
+
+        /* winzige Faden-Highlights (gibt „genäht“-Gefühl) */
+        .stitch-band-x>i,
+        .stitch-band-y>i {
+            position: absolute;
+            inset: 0;
+            content: "";
+            background:
+                repeating-linear-gradient(90deg,
+                    transparent 0 18px, var(--stitch-thread-hi) 18px 20px, transparent 20px 36px);
+            mask: linear-gradient(#000 0 0);
+            opacity: .22;
+        }
+
+        .stitch-band-y>i {
+            background:
+                repeating-linear-gradient(0deg,
+                    transparent 0 18px, var(--stitch-thread-hi) 18px 20px, transparent 20px 36px);
+        }
+
+        /* weiche Eck-Highlights (feiner Materialglanz) */
+        .stitch-corner {
+            position: absolute;
+            width: 46px;
+            height: 46px;
+            z-index: 3;
+            pointer-events: none;
+            background:
+                radial-gradient(120% 120% at 0% 0%, rgba(255, 255, 255, .08), transparent 58%);
+            mix-blend-mode: screen;
+            opacity: .35;
+            filter: blur(.3px);
+        }
+
+        .stitch-corner.tr {
+            right: 0;
+            top: 0;
+            transform: scaleX(-1)
+        }
+
+        .stitch-corner.bl {
+            left: 0;
+            bottom: 0;
+            transform: scaleY(-1)
+        }
+
+        .stitch-corner.br {
+            right: 0;
+            bottom: 0;
+            transform: scale(-1)
+        }
+
+        /* Titel-Overlay bewusst über der Naht */
+        .hero-inner {
+            position: absolute;
+            top: 50%;
+            left: calc(49% - .4rem);
+            transform: translate(-50%, -50%);
+            z-index: 4;
+            text-align: center;
+            padding: 1rem 1.5rem;
+            max-width: 320px;
+            width: 80%;
+            border-radius: var(--radius-lg);
+            background: radial-gradient(60% 80% at 50% 45%, rgba(255, 255, 255, .04) 0%, rgba(10, 10, 10, .32) 70%);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 0 24px rgba(0, 0, 0, .5), 0 0 36px rgba(194, 160, 90, .2);
+            border: 1px solid rgba(194, 160, 90, .35);
+            opacity: .95;
+            animation: fadeInSoft 1.2s ease-out forwards;
+        }
+
+        @keyframes fadeInSoft {
+            from {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(.96)
+            }
+
+            to {
+                opacity: .95;
+                transform: translate(-50%, -50%) scale(1)
+            }
+        }
+
+        .hero-topline {
+            font-family: var(--font-head);
+            color: var(--gold);
+            letter-spacing: .18em;
+            text-transform: uppercase;
+            font-size: .75rem;
+        }
+
+        .hero-title {
+            font-family: var(--font-head);
+            font-size: clamp(2rem, 3.2vw, 2.8rem);
+            color: #fff;
+            text-shadow: 0 0 10px rgba(194, 160, 90, .4);
+            position: relative;
+            display: inline-block;
+            overflow: hidden;
+        }
+
+        .hero-title .shimmer-text {
+            position: relative;
+            z-index: 2
+        }
+
+        .hero-title::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -120%;
+            width: 240%;
+            height: 100%;
+            background: linear-gradient(115deg, rgba(255, 255, 255, 0) 0%,
+                    rgba(255, 255, 255, .15) 40%, rgba(255, 255, 255, .4) 50%,
+                    rgba(255, 255, 255, .15) 60%, rgba(255, 255, 255, 0) 100%);
+            transform: skewX(-25deg);
+            animation: shimmerMove 2.8s ease-out .8s forwards;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        @keyframes shimmerMove {
+            0% {
+                left: -120%
+            }
+
+            100% {
+                left: 120%
+            }
+        }
+
+        .hero-sub {
+            font-family: var(--font-head);
+            color: var(--gold);
+            font-size: .9rem;
+            margin-top: .3rem;
+            letter-spacing: .03em
+        }
+
+        /* ===== Mobile kompakt, Naht bleibt dezent ===== */
+        @media (max-width:600px) {
+            .hero {
+                min-height: 70vh;
+                padding: 2vh 0;
+                margin-bottom: .5rem
+            }
+
+            .hero-img {
+                max-height: 60vh;
+                opacity: 1;
+                transform: none;
+                animation: none
+            }
+
+            .hero-inner {
+                top: 50%;
+                transform: translate(-50%, -50%);
+                padding: .7rem 1rem;
+                max-width: 260px
+            }
+
+            .hero-title {
+                font-size: 1.6rem;
+                text-shadow: 0 0 6px rgba(194, 160, 90, .3)
+            }
+
+            .hero-sub {
+                font-size: .82rem;
+                margin-top: .16rem
+            }
+
+            .stitch-band {
+                height: var(--stitch-band-m)
+            }
+
+            .stitch-band-x {
+                height: var(--stitch-band-m)
+            }
+
+            .stitch-band-y {
+                width: var(--stitch-band-m)
+            }
+
+            .stitch-band-x::before {
+                top: 3px
+            }
+
+            .stitch-band-x::after {
+                bottom: 3px
+            }
+
+            .stitch-band-y::before {
+                left: 3px
+            }
+
+            .stitch-band-y::after {
+                right: 3px
+            }
+        }
+    </style>
+
+    <div class="hero-bg">
+        <img class="hero-img" src="images/Iris-Banner.png" alt="Iris Tarot Banner" />
+    </div>
+
+    <!-- Rundum-Naht (schmal & edel) -->
+    <div class="stitch-frame" aria-hidden="true">
+        <div class="stitch-band-x stitch-top"><i></i></div>
+        <div class="stitch-band-x stitch-bottom"><i></i></div>
+        <div class="stitch-band-y stitch-left"><i></i></div>
+        <div class="stitch-band-y stitch-right"><i></i></div>
+        <span class="stitch-corner tl"></span>
+        <span class="stitch-corner tr"></span>
+        <span class="stitch-corner bl"></span>
+        <span class="stitch-corner br"></span>
+    </div>
+
+    <div class="hero-inner">
+        <div class="hero-topline">ΓΝΩΘΙ ΣΕΑΥΤΟΝ</div>
+        <h1 class="hero-title"><span class="shimmer-text">Iris&nbsp;Tarot</span></h1>
+        <div class="hero-sub">Das Auge der Heilung</div>
+    </div>
+</header>

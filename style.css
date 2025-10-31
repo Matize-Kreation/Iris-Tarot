@@ -1,0 +1,703 @@
+/* ==========================================
+   Iris Tarot – style.css (Schlank & Smart)
+   ========================================== */
+
+/* ---------- Grundfarben, Fonts ---------- */
+:root {
+    --bg-main: #14110f;
+    --bg-alt: #0d0d11;
+    --gold: #c2a05a;
+    --text: #f0e9d8;
+    --dim: #9c9075;
+    --border-gold: rgba(194, 160, 90, .5);
+    --radius-lg: 1.25rem;
+    --radius-md: .75rem;
+    --font-head: "Playfair Display", Georgia, serif;
+    --font-body: "Inter", system-ui, sans-serif;
+<<<<<<< Updated upstream
+}
+
+/* ---------- Reset ---------- */
+=======
+
+    /* Leder-Parameter */
+    --leather-strength: .85;
+    /* Musterintensität */
+    --leather-visibility: .6;
+    /* Gesamtopazität Overlay */
+    --leather-warmth: .55;
+    /* bräunliche Patina */
+    --leather-scratches: .22;
+    /* feine Kratzer */
+    --leather-vignette: .40;
+    /* Randabdunklung */
+}
+
+/* Reset */
+>>>>>>> Stashed changes
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0
+}
+
+html,
+body {
+<<<<<<< Updated upstream
+    min-height: 100%
+}
+
+body {
+    font-family: var(--font-body);
+    color: var(--text);
+    background: transparent;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+}
+
+/* ---------- Leder-Hintergrund ---------- */
+#leather-bg {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background:
+        linear-gradient(180deg, rgba(62, 45, 35, .85)0%, rgba(42, 31, 25, .95)60%, rgba(20, 15, 12, 1)100%),
+        radial-gradient(1200px900pxat22%28%, rgba(255, 236, 190, .08)0%, transparent55%),
+        radial-gradient(1400px1000pxat78%72%, rgba(255, 230, 180, .07)0%, transparent55%),
+        repeating-linear-gradient(35deg, rgba(112, 92, 73, .1)0, rgba(112, 92, 73, .1)2px, transparent2px, transparent13px);
+    background-blend-mode: multiply, overlay, overlay, multiply;
+    background-size: cover, 120%120%, 120%120%, 180px180px;
+    background-position: center;
+    filter: contrast(.98)saturate(.95);
+}
+
+/* ---------- Inhalt über Leder ---------- */
+#app,
+header,
+main,
+footer,
+section {
+    position: relative;
+    z-index: 1;
+    background: none;
+}
+
+/* ---------- Navigation ---------- */
+.site-nav {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: rgba(10, 10, 10, .75);
+=======
+    height: 100%
+}
+
+/* =========================================
+   GLOBAL: BASIS + TIEFE LEDERSTRUKTUR (WIRKT SEITENWEIT)
+   ========================================= */
+html {
+    /* tiefer, warmer Grundverlauf (alter Sessel) */
+    background:
+        radial-gradient(180% 140% at 50% 40%,
+            rgba(56, 41, 32, calc(.75*var(--leather-warmth))) 0%,
+            rgba(43, 33, 27, calc(.95*var(--leather-warmth))) 55%,
+            rgba(20, 15, 12, 1) 100%), var(--bg-main);
+
+    /* Grundstruktur direkt auf dem Root, damit sie überall liegt */
+    background-image:
+        /* A) feine Mikrokörnung (hell) */
+        radial-gradient(circle,
+            rgba(255, 255, 255, calc(.05*var(--leather-strength))) .7px,
+            transparent .9px),
+
+        /* B) feine Mikrokörnung (dunkel) */
+        radial-gradient(circle,
+            rgba(0, 0, 0, calc(.12*var(--leather-strength))) .8px,
+            transparent 1px),
+
+        /* C) diagonale Fasern (lang) */
+        repeating-linear-gradient(34deg,
+            rgba(115, 93, 74, calc(.08*var(--leather-strength))) 0,
+            rgba(115, 93, 74, calc(.08*var(--leather-strength))) 2px,
+            transparent 2px,
+            transparent 14px),
+
+        /* D) unregelmäßige „Poren“-Wolken */
+        radial-gradient(1200px 900px at 20% 25%,
+            rgba(255, 236, 190, calc(.06*var(--leather-strength))) 0%,
+            transparent 55%),
+        radial-gradient(1400px 1000px at 82% 72%,
+            rgba(255, 236, 190, calc(.05*var(--leather-strength))) 0%,
+            transparent 55%),
+
+        /* E) Patina-Flecken (warme Brauntöne) */
+        radial-gradient(900px 700px at 60% 15%, rgba(88, 65, 50, .18), transparent 70%),
+        radial-gradient(1000px 800px at 12% 82%, rgba(70, 52, 41, .16), transparent 70%);
+
+    background-blend-mode:
+        normal,
+        /* A */
+        normal,
+        /* B */
+        multiply,
+        /* C */
+        overlay,
+        /* D1 */
+        overlay,
+        /* D2 */
+        multiply,
+        /* E1 */
+        multiply;
+    /* E2 */
+
+    background-size:
+        3px 3px,
+        /* A hell */
+        4px 4px,
+        /* B dunkel */
+        180px 180px,
+        /* C Fasern */
+        120% 120%,
+        /* D1 */
+        120% 120%,
+        /* D2 */
+        100% 100%,
+        /* E1 */
+        100% 100%;
+    /* E2 */
+
+    background-repeat:
+        repeat, repeat, repeat,
+        no-repeat, no-repeat,
+        no-repeat, no-repeat;
+
+    background-attachment: fixed;
+    background-position: 0 0, 0 0, center, center, center, center, center;
+}
+
+/* Haarfeine Kratzer + zusätzliche Körnung über ALLEM (sichtbar auch auf Sektionen) */
+html::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 2147483646;
+    /* über allem Content */
+
+    /* zwei Schienen: 1) sichtbare Textur (ohne Blend), 2) weiche Licht/Schattierung */
+    background-image:
+        /* 1) Kratzer hell */
+        repeating-linear-gradient(11deg,
+            rgba(255, 255, 255, calc(.05*var(--leather-strength))) 0,
+            rgba(255, 255, 255, calc(.05*var(--leather-strength))) .6px,
+            transparent .6px,
+            transparent 90px),
+        /* 2) Kratzer dunkel (gegenläufig) */
+        repeating-linear-gradient(101deg,
+            rgba(0, 0, 0, calc(.05*var(--leather-strength))) 0,
+            rgba(0, 0, 0, calc(.05*var(--leather-strength))) .6px,
+            transparent .6px,
+            transparent 100px),
+        /* 3) sehr feine Körnung (sichtbar auch auf sehr dunklem Grund) */
+        radial-gradient(circle,
+            rgba(255, 255, 255, calc(.035*var(--leather-strength))) .6px,
+            transparent .9px),
+        radial-gradient(circle,
+            rgba(0, 0, 0, calc(.09*var(--leather-strength))) .7px,
+            transparent 1px),
+
+        /* 4) weiches Soft-Light zur plastischen Tiefe */
+        radial-gradient(140% 110% at 50% 42%,
+            rgba(255, 245, 230, .06) 0%,
+            rgba(255, 245, 230, 0) 60%,
+            rgba(0, 0, 0, var(--leather-vignette)) 100%);
+
+    /* Erste vier Ebenen ohne Blend (damit sie auf dunklem UI sichtbar sind),
+     letzter Layer als Soft-Light/Vignette */
+    background-blend-mode:
+        normal, normal, normal, normal, soft-light;
+
+    background-size:
+        100% 100%,
+        100% 100%,
+        2.6px 2.6px,
+        3.2px 3.2px,
+        100% 100%;
+
+    opacity: calc(var(--leather-visibility) + .08);
+}
+
+/* zusätzliche weiche „Lichtflecken“ in Soft-Light, sehr dezent */
+body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 2147483645;
+    background-image:
+        radial-gradient(900px 700px at 30% 30%, rgba(255, 240, 210, .08), transparent 70%),
+        radial-gradient(1000px 900px at 70% 70%, rgba(255, 230, 190, .06), transparent 70%);
+    background-repeat: no-repeat, no-repeat;
+    background-size: 100% 100%, 100% 100%;
+    mix-blend-mode: soft-light;
+    opacity: calc(.45*var(--leather-strength));
+}
+
+/* =========================================
+   CONTENT (durchscheinend halten, keine deckenden Vollflächen)
+   ========================================= */
+body {
+    position: relative;
+    z-index: 1;
+    color: var(--text);
+    font-family: var(--font-body);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    background: transparent;
+    /* wichtig */
+    filter: contrast(.98) saturate(.95);
+    overflow-x: hidden;
+}
+
+img {
+    display: block;
+    max-width: 100%;
+    height: auto
+}
+
+.container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 1rem
+}
+
+.center {
+    text-align: center
+}
+
+.section {
+    padding: 4rem 1rem
+}
+
+.shadow-gold {
+    box-shadow: 0 0 28px rgba(0, 0, 0, .5), 0 0 48px rgba(194, 160, 90, .25)
+}
+
+/* Karten/Boxen bewusst semitransparent lassen */
+.cardish {
+    background: linear-gradient(180deg, rgba(18, 18, 18, .64), rgba(12, 12, 12, .56));
+    border: 1px solid var(--border-gold);
+    border-radius: var(--radius-lg);
+    backdrop-filter: blur(8px) saturate(.95);
+}
+
+/* Navigation oben drüber, aber leicht transparent */
+.site-nav {
+    position: sticky;
+    top: 0;
+    z-index: 2147483647;
+    /* über Textur, damit Typo klar bleibt */
+    background: linear-gradient(180deg, rgba(10, 10, 10, .78), rgba(8, 8, 8, .6));
+>>>>>>> Stashed changes
+    border-bottom: 1px solid rgba(194, 160, 90, .12);
+    backdrop-filter: blur(8px);
+}
+
+.site-nav .nav-wrap {
+    display: flex;
+    align-items: center;
+    gap: 1rem
+}
+
+.site-nav a {
+    color: var(--text);
+    text-decoration: none;
+    padding: .9rem .6rem;
+<<<<<<< Updated upstream
+    border-radius: .5rem;
+    opacity: .95;
+=======
+    border-radius: .5rem
+>>>>>>> Stashed changes
+}
+
+.site-nav a:hover {
+    opacity: 1;
+    color: #fff
+}
+
+.site-nav .brand {
+    font-family: var(--font-head);
+    color: var(--gold);
+    margin-right: auto
+}
+
+<<<<<<< Updated upstream
+/* ---------- Hero ---------- */
+=======
+.site-nav .active {
+    color: var(--gold);
+    opacity: 1
+}
+
+/* Hero */
+>>>>>>> Stashed changes
+.hero {
+    position: relative;
+    width: 100%;
+    min-height: 90vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+<<<<<<< Updated upstream
+=======
+    background: transparent;
+    margin: 0 0 3rem;
+>>>>>>> Stashed changes
+    border-bottom: 1px solid rgba(194, 160, 90, .06);
+}
+
+.hero-bg {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+<<<<<<< Updated upstream
+=======
+    overflow: hidden
+>>>>>>> Stashed changes
+}
+
+.hero-img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    object-position: center;
+    opacity: 0;
+    transform: scale(1.01);
+    animation: heroFade 1s ease-out forwards;
+}
+
+@keyframes heroFade {
+    to {
+        opacity: 1;
+        transform: scale(1)
+    }
+}
+
+.hero-inner {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    max-width: 360px;
+    width: 90%;
+    padding: 1.2rem 2rem;
+    border-radius: var(--radius-lg);
+<<<<<<< Updated upstream
+    background: radial-gradient(60%80%at50%45%, rgba(255, 255, 255, .07)0%, rgba(10, 10, 10, .22)70%);
+=======
+    background: radial-gradient(60% 80% at 50% 45%, rgba(255, 255, 255, .07) 0%, rgba(10, 10, 10, .22) 70%);
+>>>>>>> Stashed changes
+    border: 1px solid rgba(194, 160, 90, .28);
+    opacity: .98;
+}
+
+.hero-topline {
+    font-family: var(--font-head);
+    color: var(--gold);
+    text-transform: uppercase;
+<<<<<<< Updated upstream
+    letter-spacing: .18em;
+    font-size: .8rem;
+=======
+    font-size: .85rem
+>>>>>>> Stashed changes
+}
+
+.hero-title {
+    font-family: var(--font-head);
+    color: #fff;
+<<<<<<< Updated upstream
+    font-size: clamp(2.4rem, 4vw, 3.4rem);
+    text-shadow: 0 0 14px rgba(194, 160, 90, .45);
+=======
+    text-shadow: 0 0 14px rgba(194, 160, 90, .45)
+>>>>>>> Stashed changes
+}
+
+.hero-sub {
+    font-family: var(--font-head);
+    color: var(--gold);
+    font-size: 1rem;
+    margin-top: .4rem;
+<<<<<<< Updated upstream
+=======
+    letter-spacing: .03em
+>>>>>>> Stashed changes
+}
+
+/* ---------- Footer ---------- */
+.site-footer {
+    border-top: 1px solid rgba(194, 160, 90, .06);
+    padding: 2rem 1rem;
+    text-align: center;
+    color: var(--dim)
+}
+
+<<<<<<< Updated upstream
+/* ---------- Mobile ≤600px ---------- */
+@media(max-width:600px) {
+
+    html,
+    body,
+    #app {
+        margin: 0;
+        padding: 0
+    }
+
+    /* Hero randlos & kompakt */
+    .hero {
+        display: block;
+        min-height: auto;
+        height: auto;
+        margin: 0;
+        padding: 0;
+        border: 0;
+        line-height: 0;
+        overflow: hidden;
+    }
+
+    .hero-bg {
+        position: relative;
+        inset: auto;
+        display: block;
+        overflow: hidden
+    }
+
+    .hero-img {
+        display: block;
+        width: 100%;
+        height: auto;
+        object-fit: cover;
+        object-position: center 48%;
+        /* minimaler Beschnitt */
+        margin: 0;
+        padding: 0;
+        opacity: 1;
+        transform: none;
+        animation: none;
+    }
+
+    /* Titel bleibt mittig */
+    .hero-inner {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        padding: .8rem 1rem;
+        max-width: 280px;
+        width: 85%;
+        border-radius: var(--radius-md);
+        background: radial-gradient(60%80%at50%45%, rgba(255, 255, 255, .05)0%, rgba(10, 10, 10, .18)70%);
+    }
+
+    .hero-title {
+        font-size: 1.9rem;
+        line-height: 1.2
+    }
+
+    .hero-topline {
+        font-size: .7rem;
+        letter-spacing: .12em
+    }
+
+    .hero-sub {
+        font-size: .9rem;
+        margin-top: .25rem
+    }
+
+    /* Folge-Sektion bündig */
+    header.hero+* {
+        margin-top: 0;
+        padding-top: 0
+    }
+}
+
+/* === Karten & Bestellbereich zentrieren === */
+.cards-section,
+.order-section {
+    text-align: center;
+    padding: 3rem 1rem;
+}
+
+.cards-section .cards-title,
+.order-section .order-title {
+    font-family: var(--font-head);
+    /* gleiche Schrift wie Galerie */
+    font-size: 2rem;
+    color: var(--gold);
+    letter-spacing: .05em;
+    margin-bottom: 1.5rem;
+}
+
+.order-section .order-button {
+    display: inline-block;
+    background: linear-gradient(135deg, rgba(194, 160, 90, .9), rgba(180, 130, 60, .85));
+    color: #fff;
+    font-family: var(--font-head);
+    font-size: 1.1rem;
+    letter-spacing: .05em;
+    padding: .9rem 1.8rem;
+    border-radius: var(--radius-md);
+    border: 1px solid rgba(194, 160, 90, .3);
+    text-decoration: none;
+    transition: all .25s ease;
+}
+
+.order-section .order-button:hover {
+    background: rgba(194, 160, 90, .95);
+    transform: scale(1.03);
+=======
+/* In-View Animation */
+.reveal {
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity .6s ease, transform .6s ease
+}
+
+.reveal.in {
+    opacity: 1;
+    transform: none
+}
+
+/* Legal */
+.legal-wrap {
+    display: block;
+    overflow: hidden;
+    border-radius: var(--radius-md);
+    padding: .5rem;
+    transition: box-shadow .25s ease
+}
+
+.legal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: .75rem 1rem;
+    cursor: default
+}
+
+.legal-title {
+    font-family: var(--font-head);
+    font-size: 1.05rem;
+    color: var(--gold);
+    margin: 0
+}
+
+.legal-toggle {
+    appearance: none;
+    -webkit-appearance: none;
+    border: none;
+    background: rgba(255, 255, 255, .02);
+    color: var(--text);
+    padding: .45rem;
+    border-radius: .5rem;
+    display: inline-flex;
+    align-items: center;
+    gap: .45rem;
+    cursor: pointer;
+    transition: transform .18s ease, background .18s ease;
+    font-size: .95rem
+}
+
+.legal-toggle svg {
+    transform: rotate(0);
+    transition: transform .18s ease
+}
+
+.legal-toggle[aria-expanded="true"] {
+    background: rgba(194, 160, 90, .09);
+    transform: translateY(-1px)
+}
+
+.legal-toggle[aria-expanded="true"] svg {
+    transform: rotate(180deg)
+}
+
+.legal-body {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height .32s cubic-bezier(.2, .9, .2, 1), padding .25s ease;
+    padding: 0 1rem;
+    border-top: 1px dashed rgba(194, 160, 90, .08)
+}
+
+.legal-body[aria-hidden="false"] {
+    padding: 1rem
+}
+
+.legal-content p {
+    color: var(--text);
+    margin-bottom: .75rem;
+    font-size: .96rem
+}
+
+.legal-content h3 {
+    margin-top: .6rem;
+    margin-bottom: .4rem;
+    color: var(--gold);
+    font-family: var(--font-head);
+    font-size: .98rem
+}
+
+.muted {
+    color: var(--dim);
+    font-size: .9rem
+}
+
+.visu {
+    position: relative;
+    display: inline-block
+}
+
+.visually-hidden {
+    position: absolute !important;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+    border: 0
+}
+
+/* Mobile */
+@media (max-width:768px) {
+    .site-nav .brand {
+        font-size: 1.05rem
+    }
+
+    .hero-title {
+        font-size: 2.4rem
+    }
+}
+
+@media (max-width:520px) {
+    .legal-header {
+        padding: .6rem
+    }
+
+    .legal-body[aria-hidden="false"] {
+        padding: .8rem
+    }
+>>>>>>> Stashed changes
+}

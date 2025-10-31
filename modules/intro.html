@@ -1,0 +1,455 @@
+<section id="intro" class="intro-section" data-section>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap');
+
+        .intro-section {
+            background: transparent;
+            padding: 4rem 1rem;
+        }
+
+        .intro-frame {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2rem;
+            justify-content: center;
+            align-items: flex-start;
+            max-width: 1100px;
+            margin: 0 auto;
+            position: relative;
+            background: rgba(20, 20, 20, .4);
+            border: 1px solid var(--border-gold);
+            border-radius: var(--radius-lg);
+            padding: 2rem;
+            box-shadow: 0 0 24px rgba(0, 0, 0, .45);
+        }
+
+        .intro-left {
+            flex: 1 1 320px;
+            max-width: 440px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .intro-right {
+            flex: 1 1 360px;
+            max-width: 560px;
+        }
+
+        .intro-title {
+            font-family: var(--font-head);
+            font-size: 1.9rem;
+            color: #fff;
+            margin-bottom: .5rem;
+            text-shadow: 0 0 12px rgba(194, 160, 90, .4);
+        }
+
+        .intro-sub {
+            font-family: var(--font-head);
+            font-size: 1.2rem;
+            color: var(--gold);
+            margin-bottom: 1rem;
+            letter-spacing: .03em;
+            font-style: italic;
+        }
+
+        .intro-text {
+            color: var(--text);
+            line-height: 1.78;
+            font-size: 1rem;
+            max-width: 36ch;
+        }
+
+        .intro-text p+p {
+            margin-top: 1rem;
+        }
+
+        .intro-actions {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 1rem;
+        }
+
+        .intro-button {
+            display: inline-block;
+            border-radius: .5rem;
+            overflow: hidden;
+            line-height: 0;
+            cursor: pointer;
+            filter: drop-shadow(0 3px 8px rgba(0, 0, 0, .3));
+            transition: transform .2s ease, filter .2s ease, opacity .2s ease;
+        }
+
+        .intro-button:hover {
+            transform: translateY(-1px);
+            filter: drop-shadow(0 5px 12px rgba(194, 160, 90, .25));
+            opacity: .98;
+        }
+
+        .intro-button img {
+            width: 110px;
+            height: auto;
+            display: block;
+        }
+
+        .gallery-title {
+            font-family: 'Great Vibes', cursive;
+            font-size: 2.8rem;
+            line-height: 1;
+            color: var(--gold);
+            letter-spacing: .02em;
+            text-align: center;
+            margin-bottom: 1rem;
+            position: relative;
+        }
+
+        .gallery-title:after {
+            content: "";
+            display: block;
+            width: 96px;
+            height: 1px;
+            margin: .6rem auto 0;
+            background: linear-gradient(90deg, transparent, var(--gold), transparent);
+            opacity: .8;
+        }
+
+        .gallery-cover {
+            width: 100%;
+            max-width: 380px;
+            margin: 0 auto;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-gold);
+            box-shadow: 0 0 20px rgba(0, 0, 0, .45);
+            cursor: pointer;
+            transition: transform .25s ease;
+            display: block;
+        }
+
+        .gallery-cover:hover {
+            transform: scale(1.02);
+        }
+
+        #intro-expand {
+            display: none;
+            max-width: 1000px;
+            margin: 2rem auto 0;
+            padding: 2rem;
+            background: rgba(30, 30, 30, .5);
+            border: 1px solid var(--border-gold);
+            border-radius: var(--radius-lg);
+            color: var(--text);
+            line-height: 1.7;
+            animation: fadeIn .5s ease-out;
+            box-shadow: 0 0 24px rgba(0, 0, 0, .4), 0 0 36px rgba(194, 160, 90, .15);
+        }
+
+        #intro-expand.open {
+            display: block !important;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(6px)
+            }
+
+            to {
+                opacity: 1;
+                transform: none
+            }
+        }
+
+        /* === Overlay für die Galerie === */
+        .gi-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            background: radial-gradient(120% 100% at 50% 40%, rgba(0, 0, 0, .55), rgba(0, 0, 0, .82));
+            backdrop-filter: blur(6px) saturate(.9);
+            display: none;
+            overscroll-behavior: contain;
+        }
+
+        .gi-overlay.open {
+            display: block;
+        }
+
+        .gi-bar {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: min(1200px, 96vw);
+            background: rgba(18, 18, 18, .7);
+            border: 1px solid rgba(194, 160, 90, .35);
+            border-radius: var(--radius-lg);
+            box-shadow: 0 10px 60px rgba(0, 0, 0, .65), 0 0 80px rgba(194, 160, 90, .18);
+            overflow: hidden;
+        }
+
+        .gi-bar-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            padding: .7rem 1rem;
+            background: linear-gradient(180deg, rgba(0, 0, 0, .35), rgba(0, 0, 0, .08));
+            border-bottom: 1px solid rgba(194, 160, 90, .28);
+            color: var(--gold);
+            font-family: var(--font-head);
+            letter-spacing: .04em;
+        }
+
+        .gi-btn {
+            appearance: none;
+            border: 1px solid var(--border-gold);
+            background: rgba(255, 255, 255, .03);
+            color: var(--gold);
+            border-radius: .6rem;
+            padding: .35rem .7rem;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: .35rem;
+            transition: background .2s ease, color .2s ease, transform .2s ease, opacity .2s ease;
+        }
+
+        .gi-btn:hover {
+            background: rgba(194, 160, 90, .12);
+            color: #fff;
+            transform: translateY(-1px);
+        }
+
+        .gi-bar-body {
+            position: relative;
+            padding: 14px;
+            overflow: hidden;
+        }
+
+        .gi-strip-wrap {
+            position: relative;
+            overflow: auto;
+            -webkit-overflow-scrolling: touch;
+            mask-image: linear-gradient(to right, transparent 0, black 6%, black 94%, transparent 100%);
+            -webkit-mask-image: linear-gradient(to right, transparent 0, black 6%, black 94%, transparent 100%);
+        }
+
+        .gi-strip {
+            display: flex;
+            align-items: stretch;
+            gap: 16px;
+            padding: 8px 8px 16px;
+            min-height: 420px;
+        }
+
+        .gi-img {
+            flex: 0 0 auto;
+            width: 280px;
+            height: 400px;
+            object-fit: cover;
+            object-position: center;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-gold);
+            background: #000;
+            box-shadow: 0 0 16px rgba(0, 0, 0, .55);
+            transition: transform .25s ease, box-shadow .25s ease, opacity .25s ease;
+            opacity: .98;
+        }
+
+        .gi-img:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 28px rgba(194, 160, 90, .25), 0 0 40px rgba(0, 0, 0, .55);
+            opacity: 1;
+        }
+
+        .gi-arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 2;
+            width: 44px;
+            height: 44px;
+            display: grid;
+            place-items: center;
+            border-radius: 999px;
+            background: rgba(0, 0, 0, .38);
+            border: 1px solid var(--border-gold);
+            color: var(--gold);
+            cursor: pointer;
+            user-select: none;
+            transition: background .2s ease, color .2s ease, transform .2s ease, box-shadow .2s ease;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, .45);
+        }
+
+        .gi-arrow:hover {
+            background: rgba(194, 160, 90, .18);
+            color: #fff;
+            transform: translateY(-50%) scale(1.06);
+        }
+
+        .gi-arrow.left {
+            left: 14px;
+        }
+
+        .gi-arrow.right {
+            right: 14px;
+        }
+
+        @media (max-width: 1024px) {
+            .gi-img {
+                width: 240px;
+                height: 360px
+            }
+
+            .gi-strip {
+                min-height: 380px
+            }
+        }
+
+        @media (max-width: 768px) {
+            .intro-left {
+                max-width: 520px
+            }
+
+            .gi-img {
+                width: 200px;
+                height: 300px
+            }
+
+            .gi-strip {
+                min-height: 340px
+            }
+        }
+    </style>
+
+    <div class="intro-frame">
+        <div class="intro-left">
+            <h2 class="intro-title">Iris Tarot</h2>
+            <p class="intro-sub">Das Auge der Heilung</p>
+            <div class="intro-text">
+                <p>Das Iris Tarot ist mehr als ein Kartendeck – es ist ein Kunstwerk, geboren aus Intuition, Symbolik
+                    und innerer Hingabe.</p>
+                <p>Jede Karte folgt der Textur der Iris: jenem Tor zwischen Körper und Seele, Licht und Schatten.
+                    Formen, Linien und Nuancen verdichten sich zu einem meditativen Spiegel – leise, aber präzise.</p>
+                <p>Diese Sammlung lädt ein, den eigenen Blick zu klären: nicht durch Dogma, sondern durch achtsame
+                    Betrachtung, ein ruhiges Innehalten und das Erkennen feiner Übergänge.</p>
+            </div>
+
+            <div class="intro-actions">
+                <a href="#intro-expand" id="intro-more-btn" class="intro-button" title="Mehr erfahren"
+                    aria-controls="intro-expand" aria-expanded="false"
+                    onclick="event.preventDefault();(function(el,btn){if(!el)return;var open=el.classList.toggle('open');el.setAttribute('aria-hidden',(!open).toString());btn.setAttribute('aria-expanded',open.toString());})(document.getElementById('intro-expand'),this);">
+                    <img src="images/Buttons/mehr-erfahren.png" alt="Mehr erfahren" loading="lazy">
+                </a>
+            </div>
+        </div>
+
+        <div class="intro-right">
+            <div class="gallery-title">Galerie</div>
+            <img src="images/Gallerie/Gesamtes-Set 1.png" alt="Gesamtes Iris Tarot Set – Galerie öffnen"
+                class="gallery-cover" id="gallery-open" loading="lazy">
+        </div>
+    </div>
+
+    <div id="intro-expand" class="intro-expand cardish" aria-hidden="true">
+        <p>
+            Das <strong>Iris Tarot</strong> versteht sich als stiller Begleiter – ein Raum, in dem Bilder nicht lauter
+            werden,
+            sondern tiefer. Es lädt dazu ein, die eigene Wahrnehmung zu verfeinern und Antworten nicht zu „finden“,
+            sondern sanft hervortreten zu lassen.
+        </p>
+
+        <p style="margin-top:1.1rem">
+            Jede Karte ist präzise komponiert: Rahmen, Typografie und goldene Akzente schaffen Ordnung –
+            die irisierenden Texturen bringen Bewegung. Daraus entsteht ein lebendiger Dialog zwischen
+            Intuition und Struktur, Licht und Schatten, Frage und Resonanz.
+        </p>
+
+        <p style="margin-top:1.1rem">
+            Das <em>Auge der Heilung</em> – die Iris – steht symbolisch für Klarheit im Inneren.
+            Nicht das schnelle Urteil, sondern das achtsame Schauen öffnet die Tore:
+            zu leisen Einsichten, zu stillem Mut, zu einem tieferen Ja zum eigenen Weg.
+        </p>
+
+        <p style="margin-top:1.1rem">
+            Ob als tägliches Ritual, für bewusst gesetzte Legungen oder als meditativer Spiegel:
+            dieses Deck begleitet dich feinfühlig – professionell gestaltet, liebevoll gedacht,
+            und mit der Absicht, Schönheit und Sinn zu verbinden.
+        </p>
+    </div>
+
+    <!-- Overlay-Galerie -->
+    <div class="gi-overlay" id="gi-overlay" role="dialog" aria-modal="true"
+        aria-label="Iris Tarot Galerie (Bildleiste)">
+        <div class="gi-bar" role="group" aria-roledescription="Bildleiste">
+            <div class="gi-bar-head">
+                <div>Galerie</div>
+                <button class="gi-btn" id="gi-close" type="button" aria-label="Schließen">
+                    <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                    </svg>
+                    Schließen
+                </button>
+            </div>
+
+            <div class="gi-bar-body">
+                <button class="gi-arrow left" id="gi-prev" type="button" aria-label="Nach links">‹</button>
+                <button class="gi-arrow right" id="gi-next" type="button" aria-label="Nach rechts">›</button>
+
+                <div class="gi-strip-wrap" id="gi-wrap" tabindex="0" aria-label="Bildliste, horizontal scrollbar">
+                    <div class="gi-strip" id="gi-strip">
+                        <img class="gi-img" src="images/Gallerie/Deckbox+Legetuch.png" alt="Deckbox mit Legetuch"
+                            loading="lazy">
+                        <img class="gi-img" src="images/Gallerie/Deckbox-geschlossen.png" alt="Deckbox geschlossen"
+                            loading="lazy">
+                        <img class="gi-img" src="images/Gallerie/Deckbox-offen.png" alt="Deckbox offen" loading="lazy">
+                        <img class="gi-img" src="images/Gallerie/Legetuch+Booklet(offen).png"
+                            alt="Legetuch mit Booklet (offen)" loading="lazy">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ✨ Verbesserte Galerie-Logik mit vollständiger Scroll-Sperre -->
+    <script>
+        const overlay = document.getElementById('gi-overlay');
+        const openBtn = document.getElementById('gallery-open');
+        const closeBtn = document.getElementById('gi-close');
+
+        let scrollY = 0;
+
+        const disableScroll = () => {
+            scrollY = window.scrollY;
+            document.body.style.position = 'fixed';
+            document.body.style.top = `-${scrollY}px`;
+            document.body.style.width = '100%';
+            document.body.style.overflow = 'hidden';
+        };
+
+        const enableScroll = () => {
+            document.body.style.position = '';
+            document.body.style.top = '';
+            document.body.style.width = '';
+            document.body.style.overflow = '';
+            window.scrollTo(0, scrollY);
+        };
+
+        openBtn.addEventListener('click', () => {
+            overlay.classList.add('open');
+            disableScroll();
+        });
+
+        closeBtn.addEventListener('click', () => {
+            overlay.classList.remove('open');
+            enableScroll();
+        });
+
+        // Optional: Klick außerhalb der Galerie schließt sie auch
+        overlay.addEventListener('click', (e) => {
+            if (e.target === overlay) {
+                overlay.classList.remove('open');
+                enableScroll();
+            }
+        });
+    </script>
+</section>

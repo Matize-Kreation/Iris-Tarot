@@ -1,0 +1,96 @@
+<section id="legal" class="section container">
+    <div class="legal-wrap cardish shadow-gold" aria-labelledby="legal-title">
+        <header class="legal-header"
+            style="display:flex;flex-direction:column;align-items:center;gap:.3rem;padding:1.2rem 1rem .6rem;">
+            <h2 id="legal-title" class="legal-title"
+                style="font-family:var(--font-head);color:var(--gold);font-size:1.25rem;letter-spacing:.04em;">
+                Datenschutzerklärung</h2>
+            <!-- Zentrierter Pfeil, kein Text -->
+            <button class="legal-toggle" aria-expanded="false" aria-controls="legal-body" type="button"
+                title="Ein- oder ausklappen"
+                style="appearance:none;-webkit-appearance:none;border:none;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--gold);opacity:.85;transition:transform .25s ease,color .25s ease;">
+                <svg class="chev" aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                    style="transition:transform .25s ease;">
+                    <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round" />
+                </svg>
+            </button>
+        </header>
+
+        <div id="legal-body" class="legal-body" aria-hidden="true"
+            style="max-height:0;overflow:hidden;padding:0 1rem;transition:max-height .32s cubic-bezier(.2,.9,.2,1),padding .22s ease;border-top:1px dashed rgba(194,160,90,.08);">
+            <div class="legal-content" style="max-width:680px;margin:0 auto;">
+                <p><strong>Kurzfassung</strong><br>
+                    Wir verarbeiten nur notwendige Daten zur Bestellabwicklung und Kommunikation. Diese Zusammenfassung
+                    ersetzt nicht die vollständige Fassung.</p>
+
+                <h3 style="margin-top:.8rem;font-family:var(--font-head);font-size:1rem;color:var(--gold);">Welche Daten
+                </h3>
+                <p>Kontaktinformationen, Bestelldaten, Zahlungs- und Versandinformationen.</p>
+
+                <h3 style="margin-top:.8rem;font-family:var(--font-head);font-size:1rem;color:var(--gold);">Wozu</h3>
+                <p>Bearbeitung deiner Bestellung, Versand, Kommunikation, rechtliche Archivierung.</p>
+
+                <h3 style="margin-top:.8rem;font-family:var(--font-head);font-size:1rem;color:var(--gold);">Rechte</h3>
+                <p>Auskunft, Berichtigung, Löschung, Einschränkung und Widerspruch. Kontaktiere uns per E-Mail zur
+                    Ausübung dieser Rechte.</p>
+
+                <p class="muted" style="color:var(--dim);font-size:.9rem;text-align:center;">Bei Bedarf kann hier die
+                    ausführliche Datenschutzerklärung eingeblendet oder verlinkt werden.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        (() => {
+            const wrap = document.currentScript.closest('#legal');
+            const btn = wrap.querySelector('.legal-toggle');
+            const panel = wrap.querySelector('#legal-body');
+            const STORAGE_KEY = 'legal-open';
+
+            function setOpenState(open) {
+                btn.setAttribute('aria-expanded', String(open));
+                panel.setAttribute('aria-hidden', String(!open));
+                if (open) {
+                    panel.style.maxHeight = panel.scrollHeight + 'px';
+                    panel.style.paddingTop = '1rem';
+                    panel.style.paddingBottom = '1rem';
+                    sessionStorage.setItem(STORAGE_KEY, '1');
+                    btn.style.opacity = '1';
+                    btn.style.color = '#fff';
+                    btn.querySelector('.chev').style.transform = 'rotate(180deg)';
+                } else {
+                    panel.style.maxHeight = '0px';
+                    panel.style.paddingTop = '0';
+                    panel.style.paddingBottom = '0';
+                    sessionStorage.removeItem(STORAGE_KEY);
+                    btn.style.opacity = '.85';
+                    btn.style.color = 'var(--gold)';
+                    btn.querySelector('.chev').style.transform = 'rotate(0deg)';
+                }
+            }
+
+            btn.addEventListener('click', () => {
+                const isOpen = btn.getAttribute('aria-expanded') === 'true';
+                setOpenState(!isOpen);
+            });
+
+            // Auto-Resize für die offene Höhe
+            const ro = new ResizeObserver(() => {
+                if (btn.getAttribute('aria-expanded') === 'true') {
+                    panel.style.maxHeight = panel.scrollHeight + 'px';
+                }
+            });
+            ro.observe(panel);
+
+            // Session-Status wiederherstellen
+            const shouldOpen = sessionStorage.getItem(STORAGE_KEY) === '1';
+            setOpenState(shouldOpen);
+
+            // Hash #legal öffnet automatisch
+            if (location.hash.replace('#', '') === 'legal') {
+                setOpenState(true);
+            }
+        })();
+    </script>
+</section>

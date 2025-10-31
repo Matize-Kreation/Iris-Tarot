@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Iris Tarot – Das Auge der Heilung</title>
+    <meta name="description"
+        content="Iris Tarot – Ein kunstvolles Kartendeck von Matize, inspiriert von der einzigartigen Schönheit der menschlichen Iris. Das Auge der Heilung." />
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500&family=Inter:wght@400;500&display=swap"
+        rel="stylesheet" />
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="./style.css" />
+    <link rel="icon" href="./favicon.ico" />
+
+    <!-- ★ Particle-Canvas Layer (über ALLEM) -->
+    <style>
+        /* Partikel auf Top-Layer, blockiert keine Interaktion */
+        #particle-canvas {
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            /* über allen Modulen; deine Galerie liegt DOM-mäßig danach und erscheint darüber */
+            pointer-events: none;
+            opacity: .62;
+            /* wird per JS dynamisch zwischen normal/dim gewechselt */
+            transition: opacity .35s ease;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Leder-Hintergrund -->
+    <div id="leather-bg" aria-hidden="true"></div>
+
+    <!-- ★ Partikel-Layer -->
+    <canvas id="particle-canvas" aria-hidden="true"></canvas>
+
+    <noscript style="display:block;padding:1rem;color:#c2a05a;text-align:center">
+        Bitte aktiviere JavaScript, um die Seite vollständig zu nutzen.
+    </noscript>
+
+    <!-- App Root -->
+    <div id="app" class="app"></div>
+
+    <!-- Deine bestehenden Scripts -->
+    <script src="./js/main.js" defer></script>
+    <script src="./js/intro.js" defer></script>
+
+    <!-- ★ Inline Partikel: dichter/feiner + Brillanz + Sternschnuppen + Sanft-Dimmen-Modus -->
+    <script>
+        (function () {
+            const canvas = document.getElementById('particle-canvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+
+            /* ===== Sichtbarkeits-Levels (einfaches Feintuning) ===== */
+            const CANVAS_OPACITY_NORMAL = 0.62;
+            const CANVAS_OPACITY_DIM = 0.18;   // Overlay-Modus
+
+            let dpr = Math.max(1, Math.min(2, window.devicePixelRatio || 1));
+            let w = 0, h = 0, running = true;
+            let dimmed = false; // wird automatisch per MutationObserver auf #gi-overlay gesetzt
+
+            /* ===== Regler =====
+               Dichte:   1/3000 aktuell relativ dicht (dezent: 1/6000..1/12000)
+               Größe:    0.20 .. 1.00 (kleiner = feiner)
+               Tempo:    0.030 .. 0.120 (ruhig: max 0.06..0.08)
+            */
+            const density = 1 / 3000;
+            const minCount = 120, maxCount = 360;
+            const sizeMin = 0.20, sizeMax = 1.00;
+            const speedMin = 0.030, speedMax = 0.120;
+            const twinkleMin = 0.005, twinkleMax = 0.012;
+
+            /* ===== Brillanz-Feintuning (Glints) ===== */
+            const GLINT_PROB = 0.012;             // 1.2% pro Frame & weißem Partikel (dezenter: 0.006)
+            const GLINT_STRENGTH = 0.28;          // 0..1 (Additiv-Glow)
+            const GLINT_RADIUS_MULT = 5.0;        // Glow-Radius relativ zu p.r
+
+            /* ===== Sternschnuppen ===== */
+            const METEOR_MIN_COOLDOWN = 6000;
+            const METEOR_MAX_COOLDOWN = 12000;
+            const METEOR_MAX_ACTIVE = 2;
+            const METEOR_SPEED = { min: 0.8, max: 1.6 };   // px pro Frame
+            const METEOR_LEN = { min: 60, max: 140 };      // Trail-Länge in px
+            const METEOR_WIDTH = { min: 1.2, max: 2.0 };   // Linienbreite
+            const METEOR_ALPHA = 0.22;                     // Grunddeckkraft
+
+            let parts = [];
+            let meteors = [];
+            let nextMeteorAt = 0;
+
+            function resize() {
+                w = window.innerWidth; h = window.innerHeight;
+                dpr = Math.max(1, Math.min(2, window.devicePixelRatio || 1));
+                canvas.width = Math.floor(w * dpr);
+                canvas.height = Math.floor(h * dpr);
+                canvas.style.width = w + 'px';
+                canvas.style.height = h + 'px';
+                ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+                adjustCount();
+            }
+
+            const R = (a, b) => a + Math.random() * (b - a);
+            const pick = a => a[(Math.random() * a.length) | 0];
+
+            function make(origin) {
+                const white = Math.random() < 0.55; // 55% helle, 45% dunkle
+                return {
+                    x: origin ? origin.x : R(0, w),
+                    y: origin ? origin.y : R(0, h),
+                    vx: R(-speedMax, speedMax),
+                    vy: R(-speedMax, speedMax),
+                    r: R(sizeMin, sizeMax),
+                    white,
+                    alpha: white ? R(0.30, 0.65) : R(0.18, 0.40),
+                    tw: R(twinkleMin, twinkleMax),
+                    ph: R(0, Math.PI * 2),
+                    drift: R(0.0008, 0.0025),
+                    life: 0
+                };
+            }
+
+            function adjustCount() {
+                const target = Math.max(minCount, Math.min(maxCount, Math.round(w * h * density)));
+                while (parts.length < target) parts.push(make());
+                if (parts.length > target) parts.length = target;
+            }
+
+            // leichte Parallax-Reaktion (sehr subtil)
+            let mx = 0, my = 0;
+            window.addEventListener('mousemove', (e) => {
+                mx = (e.clientX / w - .5) * 0.2; // -0.1..0.1
+                my = (e.clientY / h - .5) * 0.2;
+            }, { passive: true });
+
+            function spawnMeteor(now) {
+                if (meteors.length >= METEOR_MAX_ACTIVE) return;
+
+                const edge = pick(['top', 'left', 'right']);
+                let x, y, vx, vy;
+
+                const speed = R(METEOR_SPEED.min, METEOR_SPEED.max);
+                const angle = R(Math.PI * 0.06, Math.PI * 0.20); // flach diagonal
+
+                if (edge === 'top') {
+                    x = R(0, w);
+                    y = -10;
+                    vx = Math.cos(angle) * speed * (Math.random() < 0.5 ? -1 : 1);
+                    vy = Math.sin(angle) * speed;
+                } else if (edge === 'left') {
+                    x = -10; y = R(0, h * 0.6); // obere 60%
+                    vx = Math.cos(angle) * speed;
+                    vy = Math.sin(angle) * speed;
+                } else { // right
+                    x = w + 10; y = R(0, h * 0.6);
+                    vx = -Math.cos(angle) * speed;
+                    vy = Math.sin(angle) * speed;
+                }
+
+                meteors.push({
+                    x, y, vx, vy,
+                    len: R(METEOR_LEN.min, METEOR_LEN.max),
+                    w: R(METEOR_WIDTH.min, METEOR_WIDTH.max),
+                    alpha: METEOR_ALPHA,
+                    life: 0,
+                    maxLife: R(900, 1600), // ms
+                    born: now
+                });
+            }
+
+            function drawMeteor(m, now) {
+                const age = now - m.born;
+                m.life = age / m.maxLife;
+                if (m.life > 1) return false;
+
+                // Position updaten
+                m.x += m.vx; m.y += m.vy;
+
+                // Endpunkte (Trail zeigt gegen Bewegungsrichtung)
+                const dx = m.vx, dy = m.vy;
+                const L = m.len;
+                const x2 = m.x - dx * L;
+                const y2 = m.y - dy * L;
+
+                // Alpha Verlauf: ein/ausblenden
+                const a = m.alpha * Math.sin(Math.PI * m.life); // smooth in/out
+
+                ctx.save();
+                ctx.globalCompositeOperation = 'lighter';
+                ctx.lineCap = 'round';
+                ctx.lineWidth = m.w;
+
+                const grad = ctx.createLinearGradient(m.x, m.y, x2, y2);
+                grad.addColorStop(0, `rgba(255,255,255,${a})`);
+                grad.addColorStop(0.15, `rgba(255,255,255,${a * .8})`);
+                grad.addColorStop(1, `rgba(255,255,255,0)`);
+                ctx.strokeStyle = grad;
+
+                ctx.beginPath();
+                ctx.moveTo(m.x, m.y);
+                ctx.lineTo(x2, y2);
+                ctx.stroke();
+
+                // kleiner Kernpunkt
+                ctx.beginPath();
+                ctx.fillStyle = `rgba(255,255,255,${Math.min(0.85, a + 0.05)})`;
+                ctx.arc(m.x, m.y, Math.max(0.8, m.w * 0.8), 0, Math.PI * 2);
+                ctx.fill();
+
+                ctx.restore();
+
+                // Außerhalb? Dann beenden
+                if (m.x < -50 || m.x > w + 50 || m.y > h + 80) return false;
+                return true;
+            }
+
+            function tick(t) {
+                if (!running) return;
+                ctx.clearRect(0, 0, w, h);
+
+                // Bewegungsdämpfung im Dim-Modus
+                const calm = dimmed ? 0.5 : 1.0;
+
+                // === Partikel ===
+                for (let i = 0; i < parts.length; i++) {
+                    const p = parts[i];
+
+                    // Bewegung + Drift + Parallax
+                    p.x += (p.vx * calm) + Math.sin((t + i * 131) * p.drift) * 0.08 * calm + mx * calm;
+                    p.y += (p.vy * calm) + Math.cos((t + i * 97) * p.drift) * 0.08 * calm + my * calm;
+
+                    // Respawn an Kanten
+                    if (p.x < -6 || p.x > w + 6 || p.y < -6 || p.y > h + 6) {
+                        const e = pick(['top', 'bottom', 'left', 'right']);
+                        if (e === 'top') { p.x = R(0, w); p.y = -2 }
+                        if (e === 'bottom') { p.x = R(0, w); p.y = h + 2 }
+                        if (e === 'left') { p.x = -2; p.y = R(0, h) }
+                        if (e === 'right') { p.x = w + 2; p.y = R(0, h) }
+                        p.vx = R(-speedMin, speedMin); p.vy = R(-speedMin, speedMin); p.life = 0;
+                    }
+
+                    // Twinkle & Fade-in
+                    p.ph += p.tw;
+                    const tw = 0.6 + 0.4 * Math.sin(p.ph);
+                    p.life = Math.min(1, p.life + 0.012);
+                    const a = p.alpha * tw * (0.6 + 0.4 * p.life);
+
+                    // Kern (schwarz/weiß gemischt)
+                    const col = p.white ? `rgba(255,255,255,${a})` : `rgba(0,0,0,${a})`;
+                    ctx.beginPath();
+                    ctx.fillStyle = col;
+                    ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+                    ctx.fill();
+
+                    // Weißer Glow (dezent)
+                    if (p.white) {
+                        const rr = Math.max(2.4, p.r * 3.6);
+                        const g = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, rr);
+                        g.addColorStop(0, `rgba(255,255,255,${Math.min(0.18, a * 0.26)})`);
+                        g.addColorStop(1, `rgba(255,255,255,0)`);
+                        ctx.fillStyle = g;
+                        ctx.beginPath();
+                        ctx.arc(p.x, p.y, rr, 0, Math.PI * 2);
+                        ctx.fill();
+
+                        // ★ Mikro-Brillanz-Glints (kurze additive Aufheller)
+                        if (!dimmed && Math.random() < GLINT_PROB) {
+                            ctx.save();
+                            ctx.globalCompositeOperation = 'lighter';
+                            const rad = Math.max(3, p.r * GLINT_RADIUS_MULT);
+                            const gl = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, rad);
+                            gl.addColorStop(0, `rgba(255,255,255,${GLINT_STRENGTH})`);
+                            gl.addColorStop(1, `rgba(255,255,255,0)`);
+                            ctx.fillStyle = gl;
+                            ctx.beginPath();
+                            ctx.arc(p.x, p.y, rad, 0, Math.PI * 2);
+                            ctx.fill();
+                            ctx.restore();
+                        }
+                    }
+                }
+
+                // === Sternschnuppen (selten, subtil) ===
+                const now = performance.now();
+                if (!dimmed && now >= nextMeteorAt) {
+                    if (Math.random() < 0.7) spawnMeteor(now);
+                    nextMeteorAt = now + R(METEOR_MIN_COOLDOWN, METEOR_MAX_COOLDOWN);
+                }
+                meteors = meteors.filter(m => drawMeteor(m, now));
+
+                requestAnimationFrame(tick);
+            }
+
+            function onVisibility() {
+                running = !document.hidden;
+                if (running) requestAnimationFrame(tick);
+            }
+
+            window.addEventListener('resize', resize);
+            document.addEventListener('visibilitychange', onVisibility, { passive: true });
+
+            /* ===== Sanft-Dimmen-Modus koppeln an #gi-overlay =====
+               Wenn die Galerie geöffnet wird (.open), dimmen & beruhigen wir.
+            */
+            function bindAmbientToOverlay() {
+                const overlay = document.getElementById('gi-overlay');
+                if (!overlay) return;
+                const update = () => {
+                    const open = overlay.classList.contains('open');
+                    dimmed = open;
+                    canvas.style.opacity = open ? String(CANVAS_OPACITY_DIM) : String(CANVAS_OPACITY_NORMAL);
+                    if (open) {
+                        // sofortige Ruhe: aktive Meteore entfernen & Spawn pausieren
+                        meteors.length = 0;
+                        nextMeteorAt = Number.POSITIVE_INFINITY;
+                    } else {
+                        // Spawn wieder zulassen
+                        nextMeteorAt = performance.now() + R(METEOR_MIN_COOLDOWN, METEOR_MAX_COOLDOWN);
+                    }
+                };
+                const mo = new MutationObserver(update);
+                mo.observe(overlay, { attributes: true, attributeFilter: ['class'] });
+                update();
+            }
+
+            // initial
+            resize();
+            bindAmbientToOverlay();
+            // Setze Start-Opacity klar (falls CSS überschrieben wurde)
+            canvas.style.opacity = String(CANVAS_OPACITY_NORMAL);
+
+            // erster Meteor-Zeitpunkt
+            nextMeteorAt = performance.now() + R(METEOR_MIN_COOLDOWN, METEOR_MAX_COOLDOWN);
+
+            requestAnimationFrame(tick);
+        })();
+    </script>
+</body>
+
+</html>

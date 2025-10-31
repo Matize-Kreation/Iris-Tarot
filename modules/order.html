@@ -1,0 +1,111 @@
+<section id="order" class="section" data-section>
+    <style>
+        /* ===========================
+           BESTELLBEREICH – Iris Tarot
+           Zentriert, Goldakzent, klar
+           =========================== */
+
+        .order-wrap {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 3rem 1rem;
+            width: 100%;
+        }
+
+
+        .order-card {
+            max-width: 720px;
+            /* vorher 520px */
+            width: 100%;
+            text-align: center;
+            background: rgba(20, 20, 20, .45);
+            border: 1px solid var(--border-gold);
+            border-radius: var(--radius-lg);
+            box-shadow: 0 0 24px rgba(0, 0, 0, .45),
+                0 0 36px rgba(194, 160, 90, .18);
+            backdrop-filter: blur(10px);
+            padding: 2.5rem 2rem;
+        }
+
+
+
+
+        .order-title {
+            font-family: var(--font-head);
+            font-size: 2.2rem;
+            color: #fff;
+            margin-bottom: 1rem;
+            text-shadow: 0 0 14px rgba(194, 160, 90, .45);
+        }
+
+        .order-sub {
+            font-family: var(--font-head);
+            font-size: 1.25rem;
+            color: var(--gold);
+            letter-spacing: .04em;
+            margin-bottom: 1.8rem;
+            font-style: italic;
+        }
+
+        .order-button {
+            display: inline-block;
+            background: linear-gradient(135deg, rgba(194, 160, 90, .9), rgba(180, 130, 60, .85));
+            border-radius: var(--radius-md);
+            border: 1px solid rgba(194, 160, 90, .3);
+            transition: all .25s ease;
+            padding: .4rem;
+        }
+
+        .order-button img {
+            display: block;
+            width: 160px;
+            height: auto;
+            border-radius: var(--radius-md);
+            transition: transform .25s ease;
+        }
+
+        .order-button:hover {
+            background: rgba(194, 160, 90, .95);
+            transform: scale(1.03);
+        }
+
+        .order-button img:hover {
+            transform: scale(1.04);
+        }
+
+        /* 📱 Mobile kompakter */
+        @media (max-width:600px) {
+            .order-card {
+                max-width: 90%;
+                padding: 2rem 1.2rem;
+            }
+
+            .order-title {
+                font-size: 1.8rem;
+            }
+
+            .order-sub {
+                font-size: 1.05rem;
+                margin-bottom: 1.4rem;
+            }
+
+            .order-button img {
+                width: 140px;
+            }
+        }
+    </style>
+
+    <div class="order-wrap">
+        <div class="order-card cardish shadow-gold">
+            <h2 class="order-title">Jetzt bestellen</h2>
+            <p class="order-sub">Dein persönliches Iris&nbsp;Tarot</p>
+
+            <a href="#legal" class="order-button">
+                <img src="images/Buttons/jetzt bestellen.png" alt="Jetzt bestellen" loading="lazy" />
+            </a>
+
+            <!-- Tipp: Später Link zu Shop/Kontaktseite setzen -->
+        </div>
+    </div>
+</section>
