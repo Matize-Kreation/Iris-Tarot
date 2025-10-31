@@ -1,0 +1,370 @@
+<section id="intro" class="intro-section" data-section>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap');
+
+        .intro-section {
+            background: var(--bg-main);
+            padding: 4rem 1rem;
+        }
+
+        .intro-frame {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2rem;
+            justify-content: center;
+            align-items: flex-start;
+            max-width: 1100px;
+            margin: 0 auto;
+            position: relative;
+            background: rgba(20, 20, 20, .4);
+            border: 1px solid var(--border-gold);
+            border-radius: var(--radius-lg);
+            padding: 2rem;
+            box-shadow: 0 0 24px rgba(0, 0, 0, .45);
+        }
+
+        .intro-left {
+            flex: 1 1 320px;
+            max-width: 440px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .intro-right {
+            flex: 1 1 360px;
+            max-width: 560px;
+        }
+
+        .intro-title {
+            font-family: var(--font-head);
+            font-size: 1.9rem;
+            color: #fff;
+            margin-bottom: .5rem;
+            text-shadow: 0 0 12px rgba(194, 160, 90, .4);
+        }
+
+        .intro-sub {
+            font-family: var(--font-head);
+            font-size: 1.2rem;
+            color: var(--gold);
+            margin-bottom: 1rem;
+            letter-spacing: .03em;
+            font-style: italic;
+        }
+
+        .intro-text {
+            color: var(--text);
+            line-height: 1.78;
+            font-size: 1rem;
+            max-width: 36ch;
+        }
+
+        .intro-text p+p {
+            margin-top: 1rem;
+        }
+
+        /* Button jetzt separat, rechtsbündig unter Text */
+        .intro-actions {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 1rem;
+        }
+
+        .intro-button {
+            display: inline-block;
+            border-radius: .5rem;
+            overflow: hidden;
+            line-height: 0;
+            cursor: pointer;
+            filter: drop-shadow(0 3px 8px rgba(0, 0, 0, .3));
+            transition: transform .2s ease, filter .2s ease, opacity .2s ease;
+        }
+
+        .intro-button:hover {
+            transform: translateY(-1px);
+            filter: drop-shadow(0 5px 12px rgba(194, 160, 90, .25));
+            opacity: .98;
+        }
+
+        .intro-button img {
+            width: 110px;
+            height: auto;
+            display: block;
+        }
+
+        /* Galerie-Titel größer, schwungvoll */
+        .gallery-title {
+            font-family: 'Great Vibes', cursive;
+            font-size: 2.8rem;
+            line-height: 1;
+            color: var(--gold);
+            letter-spacing: .02em;
+            text-align: center;
+            margin-bottom: 1rem;
+            position: relative;
+        }
+
+        .gallery-title:after {
+            content: "";
+            display: block;
+            width: 96px;
+            height: 1px;
+            margin: .6rem auto 0;
+            background: linear-gradient(90deg, transparent, var(--gold), transparent);
+            opacity: .8;
+        }
+
+        .gallery-cover {
+            width: 100%;
+            max-width: 380px;
+            margin: 0 auto;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-gold);
+            box-shadow: 0 0 20px rgba(0, 0, 0, .45);
+            cursor: pointer;
+            transition: transform .25s ease;
+        }
+
+        .gallery-cover:hover {
+            transform: scale(1.02);
+        }
+
+        /* Erweiterungstext */
+        #intro-expand {
+            display: none;
+            max-width: 1000px;
+            margin: 2rem auto 0;
+            padding: 2rem;
+            background: rgba(30, 30, 30, .5);
+            border: 1px solid var(--border-gold);
+            border-radius: var(--radius-lg);
+            color: var(--text);
+            line-height: 1.7;
+            animation: fadeIn .5s ease-out;
+            box-shadow: 0 0 24px rgba(0, 0, 0, .4), 0 0 36px rgba(194, 160, 90, .15);
+        }
+
+        #intro-expand.open {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(6px)
+            }
+
+            to {
+                opacity: 1;
+                transform: none
+            }
+        }
+
+        /* Inline-Galerie-Reihe */
+        #gallery-inline {
+            display: none;
+            max-width: 1100px;
+            margin: 2rem auto 0;
+            background: rgba(20, 20, 20, .45);
+            border: 1px solid var(--border-gold);
+            border-radius: var(--radius-lg);
+            box-shadow: 0 0 24px rgba(0, 0, 0, .5), 0 0 32px rgba(194, 160, 90, .18);
+            position: relative;
+            overflow: hidden;
+        }
+
+        #gallery-inline.open {
+            display: block;
+        }
+
+        .gi-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            padding: .8rem 1rem;
+            color: var(--gold);
+            border-bottom: 1px solid var(--border-gold);
+            background: linear-gradient(180deg, rgba(0, 0, 0, .25), rgba(0, 0, 0, .05));
+        }
+
+        .gi-close {
+            appearance: none;
+            background: transparent;
+            border: 1px solid var(--border-gold);
+            color: var(--gold);
+            border-radius: .6rem;
+            padding: .35rem .7rem;
+            cursor: pointer;
+            transition: background .2s ease, color .2s ease;
+        }
+
+        .gi-close:hover {
+            background: rgba(194, 160, 90, .12);
+            color: #fff;
+        }
+
+        .gi-strip-wrap {
+            position: relative;
+            padding: 14px;
+            overflow: auto;
+            -webkit-overflow-scrolling: touch;
+            mask-image: linear-gradient(to right, transparent 0, black 6%, black 94%, transparent 100%);
+            -webkit-mask-image: linear-gradient(to right, transparent 0, black 6%, black 94%, transparent 100%);
+        }
+
+        .gi-strip {
+            display: flex;
+            align-items: stretch;
+            gap: 16px;
+            padding: 6px 8px 12px;
+            min-height: 420px;
+        }
+
+        .gi-img {
+            flex: 0 0 auto;
+            width: 260px;
+            height: 380px;
+            object-fit: cover;
+            object-position: center;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-gold);
+            box-shadow: 0 0 16px rgba(0, 0, 0, .5);
+            transition: transform .25s ease, box-shadow .25s ease, opacity .25s ease;
+            opacity: .96;
+            background: #000;
+        }
+
+        .gi-img:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 24px rgba(194, 160, 90, .22), 0 0 34px rgba(0, 0, 0, .55);
+            opacity: 1;
+        }
+
+        .gi-arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 42px;
+            height: 42px;
+            display: grid;
+            place-items: center;
+            border-radius: 999px;
+            background: rgba(0, 0, 0, .35);
+            border: 1px solid var(--border-gold);
+            color: var(--gold);
+            cursor: pointer;
+            user-select: none;
+            transition: background .2s ease, color .2s ease, transform .2s ease;
+            z-index: 2;
+        }
+
+        .gi-arrow:hover {
+            background: rgba(194, 160, 90, .15);
+            color: #fff;
+            transform: translateY(-50%) scale(1.05);
+        }
+
+        .gi-arrow.left {
+            left: 10px;
+        }
+
+        .gi-arrow.right {
+            right: 10px;
+        }
+
+        @media(max-width:1024px) {
+            .gi-img {
+                width: 220px;
+                height: 340px
+            }
+
+            .gi-strip {
+                min-height: 380px
+            }
+        }
+
+        @media(max-width:768px) {
+            .intro-left {
+                max-width: 520px
+            }
+
+            .gi-img {
+                width: 190px;
+                height: 300px
+            }
+
+            .gi-strip {
+                min-height: 340px
+            }
+        }
+    </style>
+
+    <div class="intro-frame">
+        <div class="intro-left">
+            <h2 class="intro-title">Iris Tarot</h2>
+            <p class="intro-sub">Das Auge der Heilung</p>
+            <div class="intro-text">
+                <p>
+                    Das Iris Tarot ist mehr als ein Kartendeck – es ist ein Kunstwerk, geboren aus Intuition, Symbolik
+                    und innerer Hingabe.
+                </p>
+                <p>
+                    Jede Karte folgt der Textur der Iris: jenem Tor zwischen Körper und Seele, Licht und Schatten.
+                    Formen, Linien und Nuancen verdichten sich zu einem meditativen Spiegel – leise, aber präzise.
+                </p>
+                <p>
+                    Diese Sammlung lädt ein, den eigenen Blick zu klären: nicht durch Dogma, sondern durch achtsame
+                    Betrachtung,
+                    ein ruhiges Innehalten und das Erkennen feiner Übergänge.
+                </p>
+            </div>
+
+            <div class="intro-actions">
+                <a href="#intro-expand" id="intro-more-btn" class="intro-button" title="Mehr erfahren"
+                    aria-controls="intro-expand" aria-expanded="false">
+                    <img src="images/Buttons/mehr-erfahren.png" alt="Mehr erfahren" loading="lazy">
+                </a>
+            </div>
+        </div>
+
+        <div class="intro-right">
+            <div class="gallery-title">Galerie</div>
+            <img src="images/Gallerie/Gesamtes-Set 1.png" alt="Gesamtes Iris Tarot Set – Galerie öffnen"
+                class="gallery-cover" id="gallery-open" loading="lazy">
+        </div>
+    </div>
+
+    <div id="intro-expand" class="intro-expand cardish" aria-hidden="true">
+        <p>
+            Das Iris Tarot ist ein Raum für Selbstbegegnung. Die Bildsprache verbindet Intuition & Struktur, Ruhe &
+            Intensität –
+            als Einladung, die eigene Wahrnehmung zu verfeinern und Antworten im stillen Sehen zu finden.
+        </p>
+        <p style="margin-top:1rem">
+            Jede Karte wurde in sorgsamer Handarbeit gestaltet. Goldene Akzente, klare Typografie und
+            die irisierende Textur formen ein harmonisches Gleichgewicht zwischen Kunstwerk und Werkzeug.
+        </p>
+    </div>
+
+    <div id="gallery-inline" class="cardish" aria-hidden="true" aria-label="Iris Tarot Galerie – Bildreihe">
+        <div class="gi-head">
+            <div style="font-family:var(--font-head);letter-spacing:.05em">Galerie</div>
+            <button class="gi-close" id="gi-close">Schließen</button>
+        </div>
+        <button class="gi-arrow left" id="gi-prev" aria-label="Nach links">‹</button>
+        <button class="gi-arrow right" id="gi-next" aria-label="Nach rechts">›</button>
+        <div class="gi-strip-wrap" id="gi-wrap">
+            <div class="gi-strip" id="gi-strip">
+                <img class="gi-img" src="images/Gallerie/Deckbox+Legetuch.png" alt="Deckbox mit Legetuch"
+                    loading="lazy">
+                <img class="gi-img" src="images/Gallerie/Deckbox-geschlossen.png" alt="Deckbox geschlossen"
+                    loading="lazy">
+                <img class="gi-img" src="images/Gallerie/Deckbox-offen.png" alt="Deckbox offen" loading="lazy">
+                <img class="gi-img" src="images/Gallerie/Gesamtes-Set 1.png" alt="Gesamtes Set 1" loading="lazy">
+                <img class="gi-img" src="images/Gallerie/Legetuch+Booklet(offen).png" alt="Legetuch mit Booklet (offen)"
+                    loading="lazy">
+            </div>
+        </div>
+    </div>
+</section>

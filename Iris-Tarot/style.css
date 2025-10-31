@@ -1,0 +1,405 @@
+/* ========== DESIGN-VARS ========== */
+:root {
+    --bg-main: #14110f;
+    --bg-alt: #0d0d11;
+    --gold: #c2a05a;
+    --text: #f0e9d8;
+    --dim: #9c9075;
+    --border-gold: rgba(194, 160, 90, .5);
+    --radius-lg: 1.25rem;
+    --radius-md: .75rem;
+    --font-head: "Playfair Display", Georgia, serif;
+    --font-body: "Inter", system-ui, sans-serif;
+
+    /* Leder-Feinsteuerung */
+    --leather-intensity: .9;
+    /* 0..1 */
+    --leather-vignette: .45;
+    /* 0..1 */
+}
+
+/* ========== RESET/BASE ========== */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0
+}
+
+html,
+body {
+    min-height: 100%
+}
+
+/* Root & Body dürfen nix übermalen */
+html {
+    background: transparent !important;
+}
+
+body {
+    color: var(--text);
+    font-family: var(--font-body);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    background: transparent !important;
+    overflow-x: hidden;
+
+    /* Stacking-Context (für Fallback ::before) */
+    position: relative;
+    isolation: isolate;
+}
+
+/* ========== LEDER-HINTERGRUND (PRIO 1: DOM-ELEMENT) ========== */
+#leather-bg {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    /* Inhalt darüber -> z-index:1 */
+    pointer-events: none;
+
+    /* Leder-Layer */
+    background-color: #201813;
+    background-image:
+        /* 1) Warmbraune Grundtönung (Verlauf) */
+        linear-gradient(180deg, rgba(62, 45, 35, .85) 0%, rgba(42, 31, 25, .95) 60%, rgba(20, 15, 12, 1) 100%),
+
+        /* 2) feine Lichtwolken/Poren */
+        radial-gradient(1200px 900px at 22% 28%, rgba(255, 236, 190, .08) 0%, transparent 55%),
+        radial-gradient(1400px 1000px at 78% 72%, rgba(255, 230, 180, .07) 0%, transparent 55%),
+
+        /* 3) diagonale Fasern */
+        repeating-linear-gradient(35deg,
+            rgba(112, 92, 73, calc(.10*var(--leather-intensity))) 0px,
+            rgba(112, 92, 73, calc(.10*var(--leather-intensity))) 2px,
+            transparent 2px,
+            transparent 13px),
+
+        /* 4) Mikrokörnung hell */
+        radial-gradient(circle,
+            rgba(255, 255, 255, calc(.06*var(--leather-intensity))) .7px,
+            transparent .95px),
+
+        /* 5) Mikrokörnung dunkel */
+        radial-gradient(circle,
+            rgba(0, 0, 0, calc(.14*var(--leather-intensity))) .8px,
+            transparent 1px),
+
+        /* 6) Vignette */
+        radial-gradient(140% 110% at 50% 42%,
+            rgba(0, 0, 0, 0) 0%,
+            rgba(0, 0, 0, var(--leather-vignette)) 100%);
+    background-blend-mode:
+        multiply, overlay, overlay, multiply, normal, normal, normal;
+    background-size:
+        cover, 120% 120%, 120% 120%, 180px 180px, 3px 3px, 4px 4px, 100% 100%;
+    background-repeat:
+        no-repeat, no-repeat, no-repeat, repeat, repeat, repeat, no-repeat;
+    background-position:
+        center, center, center, center, 0 0, 0 0, center;
+
+    filter: contrast(.98) saturate(.95);
+}
+
+/* ========== LEDER-HINTERGRUND (PRIO 2: Fallback via ::before) ========== */
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+
+    background-color: #201813;
+    background-image:
+        linear-gradient(180deg, rgba(62, 45, 35, .85) 0%, rgba(42, 31, 25, .95) 60%, rgba(20, 15, 12, 1) 100%),
+        radial-gradient(1200px 900px at 22% 28%, rgba(255, 236, 190, .08) 0%, transparent 55%),
+        radial-gradient(1400px 1000px at 78% 72%, rgba(255, 230, 180, .07) 0%, transparent 55%),
+        repeating-linear-gradient(35deg,
+            rgba(112, 92, 73, calc(.10*var(--leather-intensity))) 0px,
+            rgba(112, 92, 73, calc(.10*var(--leather-intensity))) 2px,
+            transparent 2px,
+            transparent 13px),
+        radial-gradient(circle,
+            rgba(255, 255, 255, calc(.06*var(--leather-intensity))) .7px,
+            transparent .95px),
+        radial-gradient(circle,
+            rgba(0, 0, 0, calc(.14*var(--leather-intensity))) .8px,
+            transparent 1px),
+        radial-gradient(140% 110% at 50% 42%,
+            rgba(0, 0, 0, 0) 0%,
+            rgba(0, 0, 0, var(--leather-vignette)) 100%);
+    background-blend-mode:
+        multiply, overlay, overlay, multiply, normal, normal, normal;
+    background-size:
+        cover, 120% 120%, 120% 120%, 180px 180px, 3px 3px, 4px 4px, 100% 100%;
+    background-repeat:
+        no-repeat, no-repeat, no-repeat, repeat, repeat, repeat, no-repeat;
+    background-position:
+        center, center, center, center, 0 0, 0 0, center;
+
+    filter: contrast(.98) saturate(.95);
+}
+
+/* ========== INHALT ÜBER DEN LEDER-LAYER ========== */
+header,
+main,
+footer,
+.site-nav,
+.hero,
+.section,
+.cards-section,
+.site-footer,
+#app,
+.app,
+.wrapper,
+.page,
+.content,
+[class*="section"],
+[class*="Section"] {
+    position: relative;
+    z-index: 1;
+}
+
+/* Transparenz durchhalten für Wrapper/Sektionen */
+#app,
+.app,
+.wrapper,
+.page,
+.content,
+.hero,
+.section,
+.cards-section,
+.site-footer,
+header,
+main,
+footer,
+[class*="section"],
+[class*="Section"] {
+    background-color: transparent !important;
+    background-image: none !important;
+}
+
+/* ========== UI (unverändert, nur gekürzt wo möglich) ========== */
+.cardish {
+    background: linear-gradient(180deg, rgba(18, 18, 18, .62), rgba(12, 12, 12, .56));
+    border: 1px solid var(--border-gold);
+    border-radius: var(--radius-lg);
+    backdrop-filter: blur(8px) saturate(.95);
+}
+
+/* NAV */
+.site-nav {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: linear-gradient(180deg, rgba(10, 10, 10, .78), rgba(8, 8, 8, .6));
+    border-bottom: 1px solid rgba(194, 160, 90, .12);
+    backdrop-filter: blur(8px);
+}
+
+.site-nav .nav-wrap {
+    display: flex;
+    align-items: center;
+    gap: 1rem
+}
+
+.site-nav a {
+    color: var(--text);
+    text-decoration: none;
+    font-size: .95rem;
+    opacity: .95;
+    padding: .9rem .6rem;
+    border-radius: .5rem
+}
+
+.site-nav a:hover {
+    opacity: 1;
+    color: #fff
+}
+
+.site-nav .brand {
+    font-family: var(--font-head);
+    letter-spacing: .08em;
+    color: var(--gold);
+    margin-right: auto
+}
+
+.site-nav .active {
+    color: var(--gold);
+    opacity: 1
+}
+
+/* HERO */
+.hero {
+    position: relative;
+    width: 100%;
+    min-height: 90vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    margin: 0 0 3rem;
+    border-bottom: 1px solid rgba(194, 160, 90, .06);
+}
+
+.hero-bg {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden
+}
+
+.hero-img {
+    width: 100%;
+    height: 100%;
+    max-height: 95vh;
+    object-fit: contain;
+    object-position: center 50%;
+    opacity: 0;
+    transform: scale(1.01);
+    animation: heroFade 1s ease-out forwards;
+}
+
+@keyframes heroFade {
+    to {
+        opacity: 1;
+        transform: scale(1)
+    }
+}
+
+.hero-inner {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    max-width: 360px;
+    width: 90%;
+    padding: 1.2rem 2rem;
+    border-radius: var(--radius-lg);
+    background: radial-gradient(60% 80% at 50% 45%, rgba(255, 255, 255, .07) 0%, rgba(10, 10, 10, .22) 70%);
+    border: 1px solid rgba(194, 160, 90, .28);
+    opacity: .98;
+}
+
+.hero-topline {
+    font-family: var(--font-head);
+    color: var(--gold);
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    font-size: .85rem
+}
+
+.hero-title {
+    font-family: var(--font-head);
+    font-size: clamp(2.6rem, 4vw, 3.4rem);
+    color: #fff;
+    text-shadow: 0 0 14px rgba(194, 160, 90, .45)
+}
+
+.hero-sub {
+    font-family: var(--font-head);
+    color: var(--gold);
+    font-size: 1.05rem;
+    margin-top: .4rem;
+    letter-spacing: .03em
+}
+
+/* FOOTER */
+.site-footer {
+    border-top: 1px solid rgba(194, 160, 90, .06);
+    padding: 2rem 1rem;
+    margin-top: 3rem;
+    text-align: center;
+    color: var(--dim)
+}
+
+/* Helpers */
+img {
+    display: block;
+    max-width: 100%;
+    height: auto
+}
+
+.container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 1rem
+}
+
+.center {
+    text-align: center
+}
+
+.section {
+    padding: 4rem 1rem
+}
+
+.shadow-gold {
+    box-shadow: 0 0 28px rgba(0, 0, 0, .5), 0 0 48px rgba(194, 160, 90, .25)
+}
+
+.reveal {
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity .6s ease, transform .6s ease
+}
+
+.reveal.in {
+    opacity: 1;
+    transform: none
+}
+
+.muted {
+    color: var(--dim);
+    font-size: .9rem
+}
+
+/* Mobile Tweaks */
+@media (max-width:768px) {
+    .site-nav .brand {
+        font-size: 1.05rem
+    }
+
+    .hero-title {
+        font-size: 2.4rem
+    }
+}
+
+@media (max-width:600px) {
+    .hero {
+        min-height: auto;
+        padding: 1.5rem 0;
+        margin-bottom: 2rem;
+        display: block
+    }
+
+    .hero-inner {
+        position: static;
+        transform: none;
+        margin: 0 auto;
+        padding: .8rem 1rem;
+        max-width: 280px;
+        border-radius: var(--radius-md);
+        background: radial-gradient(60% 80% at 50% 45%, rgba(255, 255, 255, .05) 0%, rgba(10, 10, 10, .18) 70%);
+    }
+
+    .hero-title {
+        font-size: 1.8rem;
+        line-height: 1.2;
+        text-shadow: 0 0 10px rgba(194, 160, 90, .35)
+    }
+
+    .hero-sub {
+        font-size: .9rem;
+        margin-top: .3rem
+    }
+
+    .hero-img {
+        height: auto;
+        max-height: 50vh;
+        object-fit: cover;
+        object-position: center
+    }
+}

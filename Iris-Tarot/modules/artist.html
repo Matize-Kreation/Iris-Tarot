@@ -1,0 +1,248 @@
+<section id="artist" class="section" data-section>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap');
+
+        .artist-wrap {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        .artist-card {
+            display: grid;
+            grid-template-columns: 1.15fr .85fr;
+            gap: 2rem;
+            align-items: center;
+            background: rgba(20, 20, 20, .42);
+            border: 1px solid var(--border-gold);
+            border-radius: var(--radius-lg);
+            box-shadow: 0 0 24px rgba(0, 0, 0, .45), 0 0 36px rgba(194, 160, 90, .18);
+            padding: 2rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .artist-head {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: .75rem;
+        }
+
+        .artist-title {
+            font-family: 'Great Vibes', cursive;
+            font-size: 2.6rem;
+            line-height: 1;
+            color: var(--gold);
+            letter-spacing: .04em;
+            white-space: nowrap;
+            text-shadow: 0 0 14px rgba(194, 160, 90, .35);
+        }
+
+        .artist-divider {
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--gold), transparent);
+            opacity: .7;
+        }
+
+        .artist-lead {
+            font-size: 1.05rem;
+            color: #fff;
+            line-height: 1.7;
+            margin-bottom: .75rem;
+            text-shadow: 0 0 10px rgba(0, 0, 0, .25);
+        }
+
+        .artist-par {
+            color: var(--text);
+            line-height: 1.78;
+            margin-top: .85rem;
+        }
+
+        .artist-highlights {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: .6rem 1.2rem;
+            margin: 1rem 0 0;
+        }
+
+        .artist-highlights li {
+            list-style: none;
+            color: var(--text);
+            line-height: 1.6;
+            position: relative;
+            padding-left: 1.1rem;
+        }
+
+        .artist-highlights li::before {
+            content: "✧";
+            position: absolute;
+            left: 0;
+            top: 0;
+            color: var(--gold);
+            opacity: .85;
+        }
+
+        .artist-quote {
+            margin: 1.2rem 0 0;
+            padding: 1rem 1.2rem;
+            border: 1px solid var(--border-gold);
+            border-radius: var(--radius-md);
+            background: linear-gradient(180deg, rgba(255, 255, 255, .05), rgba(0, 0, 0, .08));
+            color: var(--text);
+            font-style: italic;
+            line-height: 1.7;
+            box-shadow: inset 0 0 24px rgba(0, 0, 0, .15);
+        }
+
+        .artist-quote cite {
+            display: block;
+            margin-top: .6rem;
+            color: var(--gold);
+            font-style: normal;
+            font-family: var(--font-head);
+        }
+
+        .artist-media {
+            justify-self: center;
+            text-align: center;
+        }
+
+        .artist-photo {
+            width: min(100%, 360px);
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-gold);
+            box-shadow: 0 0 18px rgba(0, 0, 0, .5);
+            transition: box-shadow .25s ease, transform .25s ease, filter .25s ease;
+            background: #000;
+        }
+
+        .artist-photo:hover {
+            box-shadow: 0 0 26px rgba(194, 160, 90, .28), 0 0 36px rgba(0, 0, 0, .55);
+            transform: translateY(-2px);
+            filter: saturate(1.03);
+        }
+
+        .artist-meta {
+            margin-top: .8rem;
+            color: var(--dim);
+            font-size: .95rem;
+        }
+
+        .artist-sign {
+            margin: .6rem auto 0;
+            width: 160px;
+            opacity: .9;
+            display: block;
+            filter: drop-shadow(0 2px 6px rgba(0, 0, 0, .35));
+        }
+
+        /* 📱 Mobile Optimierung */
+        @media (max-width: 860px) {
+            .artist-card {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .artist-card {
+                padding: 1.5rem;
+                gap: 1.2rem;
+            }
+
+            .artist-title {
+                font-size: 2.2rem;
+            }
+
+            .artist-lead {
+                font-size: 0.95rem;
+                line-height: 1.6;
+            }
+
+            .artist-par {
+                font-size: 0.92rem;
+                line-height: 1.65;
+            }
+
+            .artist-highlights {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 0.5rem 1rem;
+            }
+
+            .artist-quote {
+                font-size: 0.9rem;
+                padding: 0.8rem 1rem;
+            }
+
+            .artist-photo {
+                width: 240px;
+                margin: 0 auto;
+            }
+
+            .artist-meta {
+                font-size: 0.85rem;
+            }
+
+            .artist-sign {
+                width: 140px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .artist-highlights {
+                grid-template-columns: 1fr;
+            }
+
+            .artist-title {
+                font-size: 2rem;
+            }
+
+            .artist-photo {
+                width: 200px;
+            }
+        }
+    </style>
+
+    <div class="artist-wrap">
+        <div class="artist-card">
+            <div>
+                <div class="artist-head">
+                    <h2 class="artist-title">Künstler</h2>
+                    <div class="artist-divider"></div>
+                </div>
+
+                <p class="artist-lead">
+                    Matize arbeitet an der Schwelle zwischen Geist, Form und Frequenz – wo Intuition zur Linie wird
+                    und Bilder zu Räumen, in denen man atmen kann.
+                </p>
+
+                <p class="artist-par">
+                    Sein Werk verbindet visuelle Harmonie mit präziser Symbolik. Die Iris dient als Leitmotiv:
+                    ein lebendiges Gefüge aus Licht und Schatten, das Wahrnehmung und Bedeutung miteinander verwebt.
+                </p>
+
+                <ul class="artist-highlights">
+                    <li>Feinsinnige Komposition und goldene Proportionen</li>
+                    <li>Ritualhafte Ruhe, klare Typografie, haptische Details</li>
+                    <li>Karten als meditativer Spiegel – Kunst & Werkzeug zugleich</li>
+                    <li>Dialog zwischen Körper, Gefühl und Bewusstsein</li>
+                </ul>
+
+                <p class="artist-quote">
+                    „Iris Tarot ist kein Orakel, sondern eine Einladung – zum stillen Sehen, zum Erkennen.“
+                    <cite>— Matize</cite>
+                </p>
+            </div>
+
+            <div class="artist-media">
+                <div class="artist-media-flex">
+                    <img src="images/Künstler/Lyrik - Branding.png" alt="Matize – Künstlerportrait" class="artist-photo"
+                        loading="lazy" />
+                    <div class="artist-meta-wrap">
+                        <div class="artist-meta">Künstler &nbsp;·&nbsp; Gestaltung & Konzept</div>
+                        <img src="images/Künstler/Matize-Schriftzug.png" alt="Signatur Matize" class="artist-sign"
+                            loading="lazy" onerror="this.style.display='none'" />
+                    </div>
+                </div>
+            </div>

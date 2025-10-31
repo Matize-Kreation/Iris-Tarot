@@ -1,0 +1,157 @@
+<section id="cards" class="section center" data-section>
+    <h2 style="font-family:var(--font-head);font-size:2rem;color:var(--gold);margin-bottom:2rem">Karten</h2>
+
+    <div class="cards-viewport" style="
+      width:calc(4 * 200px + 3 * 20px);margin:0 auto;overflow:hidden;position:relative;
+      -webkit-mask-image:linear-gradient(to right,transparent 0,black 8%,black 92%,transparent 100%);
+      mask-image:linear-gradient(to right,transparent 0,black 8%,black 92%,transparent 100%);">
+        <div class="cards-track" id="cardsTrack" aria-label="Iris Tarot Kartenkarussell" role="region"
+            style="display:flex;gap:20px;overflow-x:auto;scroll-behavior:smooth;padding:.5rem;-webkit-overflow-scrolling:touch;">
+            <img src="images/Karten/Karte1.png" alt="Tarotkarte – Der Narr" class="card-img" loading="lazy" />
+            <img src="images/Karten/Karte2.png" alt="Tarotkarte – Das Rad des Schicksals" class="card-img"
+                loading="lazy" />
+            <img src="images/Karten/Karte3.png" alt="Tarotkarte – Die Sonne" class="card-img" loading="lazy" />
+            <img src="images/Karten/Karte4.png" alt="Tarotkarte – Der Tod" class="card-img" loading="lazy" />
+            <img src="images/Karten/Karte5.png" alt="Tarotkarte – Der Eremit" class="card-img" loading="lazy" />
+            <img src="images/Karten/Karte6.png" alt="Tarotkarte – Der Magier" class="card-img" loading="lazy" />
+            <img src="images/Karten/Karte7.png" alt="Tarotkarte – Der Herrscher" class="card-img" loading="lazy" />
+            <img src="images/Karten/Karte8.png" alt="Tarotkarte – Das Gericht" class="card-img" loading="lazy" />
+            <img src="images/Karten/Karte9.png" alt="Tarotkarte – Die Welt" class="card-img" loading="lazy" />
+            <img src="images/Karten/Karte10.png" alt="Tarotkarte – Die Liebenden" class="card-img" loading="lazy" />
+        </div>
+    </div>
+
+    <style>
+        .card-img {
+            flex: 0 0 200px;
+            width: 200px;
+            height: 300px;
+            object-fit: cover;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-gold);
+            box-shadow: 0 0 10px rgba(0, 0, 0, .4);
+            transition: transform .3s ease, box-shadow .3s ease, opacity .3s ease, filter .3s ease;
+            opacity: .9;
+            cursor: pointer;
+            will-change: transform;
+        }
+
+        .card-img.focused {
+            transform: scale(1.08);
+            box-shadow: 0 0 24px rgba(194, 160, 90, .5);
+            opacity: 1;
+            z-index: 2;
+            filter: saturate(1.05)
+        }
+
+        @media (max-width:900px) {
+            .cards-viewport {
+                width: calc(2 * 160px + 1 * 16px);
+                padding: 0 .5rem
+            }
+
+            .card-img {
+                width: 160px;
+                height: 240px;
+                flex: 0 0 160px
+            }
+        }
+    </style>
+
+    <script>
+        (function () {
+            const VISIBLE = 4;
+            const track = document.getElementById('cardsTrack');
+            const originals = Array.from(track.querySelectorAll('.card-img'));
+            if (originals.length === 0) return;
+
+            // Helpers
+            const getPx = (v) => {
+                const el = document.documentElement;
+                const raw = getComputedStyle(el).getPropertyValue(v).trim();
+                return parseFloat(raw || 0);
+            };
+
+            function measurement() {
+                const cardW = originals[0].getBoundingClientRect().width;
+                const gap = parseFloat(getComputedStyle(track).gap) || 20;
+                const unit = cardW + gap;
+                return { cardW, gap, unit };
+            }
+
+            function setupClones() {
+                const firstN = originals.slice(0, VISIBLE).map(n => n.cloneNode(true));
+                const lastN = originals.slice(-VISIBLE).map(n => n.cloneNode(true));
+                firstN.forEach(n => track.appendChild(n));
+                lastN.reverse().forEach(n => track.insertBefore(n, track.firstChild));
+            }
+            setupClones();
+
+            function setStartPosition() {
+                const { unit } = measurement();
+                track.scrollLeft = unit * VISIBLE;
+            }
+
+            // Wheel horizontal
+            track.addEventListener('wheel', (e) => {
+                if (e.deltaY === 0) return;
+                e.preventDefault();
+                track.scrollBy({ left: e.deltaY, behavior: 'smooth' });
+            }, { passive: false });
+
+            // Drag-to-scroll
+            let isDown = false, startX = 0, startLeft = 0;
+            track.addEventListener('mousedown', (e) => { isDown = true; startX = e.clientX; startLeft = track.scrollLeft; track.style.cursor = 'grabbing'; });
+            window.addEventListener('mouseup', () => { isDown = false; track.style.cursor = 'default'; });
+            window.addEventListener('mousemove', (e) => {
+                if (!isDown) return;
+                const dx = e.clientX - startX;
+                track.scrollLeft = startLeft - dx;
+            });
+
+            function updateFocus() {
+                const rect = track.getBoundingClientRect();
+                const center = rect.left + rect.width / 2;
+                const cards = track.querySelectorAll('.card-img');
+                let closest = null, min = Infinity;
+                cards.forEach(card => {
+                    const r = card.getBoundingClientRect();
+                    const c = r.left + r.width / 2;
+                    const d = Math.abs(center - c);
+                    if (d < min) { min = d; closest = card; }
+                });
+                cards.forEach(c => c.classList.remove('focused'));
+                if (closest) closest.classList.add('focused');
+            }
+
+            function handleInfinite() {
+                const { unit } = measurement();
+                const totalOriginalWidth = unit * originals.length;
+                if (track.scrollLeft < unit * 0.5) { track.scrollLeft += totalOriginalWidth; }
+                else if (track.scrollLeft > (unit * (originals.length + VISIBLE - 0.5))) {
+                    track.scrollLeft -= totalOriginalWidth;
+                }
+            }
+
+            let ticking = false;
+            track.addEventListener('scroll', () => {
+                if (ticking) return;
+                ticking = true;
+                requestAnimationFrame(() => {
+                    handleInfinite();
+                    updateFocus();
+                    ticking = false;
+                });
+            });
+
+            let resizeTimer;
+            window.addEventListener('resize', () => {
+                clearTimeout(resizeTimer);
+                resizeTimer = setTimeout(() => { setStartPosition(); updateFocus(); }, 150);
+            });
+
+            setStartPosition();
+            updateFocus();
+        })();
+    </script>
+</section>
